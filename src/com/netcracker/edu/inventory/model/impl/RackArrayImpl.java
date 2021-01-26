@@ -33,10 +33,7 @@ public class RackArrayImpl implements Rack {
     @Override
     public Device getDevAtSlot(int index) {
         if (checkIndex(index)) return devices[index];
-        else {
-            System.err.println("В массиве нет такого индекса");
-            return null;
-        }
+        return null;
     }
 
     @Override
