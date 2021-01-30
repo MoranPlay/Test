@@ -3,12 +3,20 @@ package com.netcracker.edu.inventory.model.impl;
 import com.netcracker.edu.inventory.model.Device;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public abstract class AbstractDevice implements Device {
 
     protected int in;
-    protected String type, manufacturer, model;
+    protected String type;
+    protected String manufacturer;
+    protected String model;
     protected Date productionDate;
+
+    protected static Logger log = Logger.getLogger(AbstractDevice.class.getName());
+
 
     @Override
     public int getIn() {
@@ -18,9 +26,15 @@ public abstract class AbstractDevice implements Device {
     @Override
     public void setIn(int in) {
         if (getIn() == 0) {
-            if (in <= 0) System.err.println("Can't be less or equals 0.");
+            if (in <= 0) {
+                IllegalArgumentException e = new IllegalArgumentException("In can not be negative");
+                log.log(Level.SEVERE, e.getMessage(), e);
+                throw e;
+            }
             else this.in = in;
-        } else System.err.println("in is already installed");
+        } else {
+            log.log(Level.WARNING,"Inventory number can not be reset");
+        }
     }
 
     @Override

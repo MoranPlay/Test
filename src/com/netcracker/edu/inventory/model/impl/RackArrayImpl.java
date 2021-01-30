@@ -1,12 +1,18 @@
 package com.netcracker.edu.inventory.model.impl;
 
+import com.netcracker.edu.inventory.exception.DeviceValidationException;
 import com.netcracker.edu.inventory.model.Device;
 import com.netcracker.edu.inventory.model.Rack;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class RackArrayImpl implements Rack {
 
+    protected static Logger log = Logger.getLogger(RackArrayImpl.class.getName());
+
     private int size;
-    private int freeSize = 0;
+    private int freeSize;
     public Device[] devices;
 
     public RackArrayImpl(int size) {
@@ -15,8 +21,9 @@ public class RackArrayImpl implements Rack {
             devices = new Device[size];
             freeSize = size;
         } else {
-            System.err.println("Размер не может быть меньше 0");
-            devices = new Device[0];
+            IllegalArgumentException e = new IllegalArgumentException(" Size of rack can not be 0 or less ");
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -45,24 +52,25 @@ public class RackArrayImpl implements Rack {
                     freeSize--;
 
                     return true;
-
                 }
             } else {
-                System.err.println("Device IN less or equals 0");
+                DeviceValidationException e = new DeviceValidationException("Rack.insertDevToSlot", device);
+                log.log(Level.SEVERE,e.getMessage(),e);
+                throw e;
             }
         }
-        System.err.println("Index out of bounds or device = null");
         return false;
     }
 
     @Override
     public Device removeDevFromSlot(int index) {
-        if (checkIndex(index) && devices[index] != null) {
+        checkIndex(index);
+        if (devices[index] != null) {
             Device temp = devices[index];
             devices[index] = null;
             return temp;
         } else {
-            System.err.println("В массиве нет такого индекса или устроиства не существует");
+            log.log(Level.WARNING, "Can not remove from empty slot " + index);
             return null;
         }
     }
@@ -78,7 +86,13 @@ public class RackArrayImpl implements Rack {
     }
 
     public boolean checkIndex(int index) {
-        return index >= 0 && index < size;
+        if(index >= 0 && index < size) {
+            return true;
+        } else {
+            IndexOutOfBoundsException e = new IndexOutOfBoundsException("Index must be from 0 to " + size + "; current index = " + index);
+            log.log(Level.SEVERE,e.getMessage(),e);
+            throw e;
+        }
     }
 }
 
