@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class RackArrayImpl implements Rack {
 
-    protected static Logger log = Logger.getLogger(RackArrayImpl.class.getName());
+    protected static final Logger log = Logger.getLogger(RackArrayImpl.class.getName());
 
     private int size;
     private int freeSize;
@@ -45,19 +45,18 @@ public class RackArrayImpl implements Rack {
 
     @Override
     public boolean insertDevToSlot(Device device, int index) {
-        if (device != null && checkIndex(index)) {
-            if (device.getIn() > 0) {
-                if (devices[index] == null) {
-                    devices[index] = device;
-                    freeSize--;
+        checkIndex(index);
+        if (device != null && device.getIn() > 0) {
+            if (devices[index] == null) {
+                devices[index] = device;
+                freeSize--;
 
-                    return true;
-                }
-            } else {
-                DeviceValidationException e = new DeviceValidationException("Rack.insertDevToSlot", device);
-                log.log(Level.SEVERE,e.getMessage(),e);
-                throw e;
+                return true;
             }
+        } else {
+            DeviceValidationException e = new DeviceValidationException("Rack.insertDevToSlot", device);
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
         }
         return false;
     }
