@@ -105,14 +105,14 @@ public class RackArrayImpl implements Rack {
     @Override
     public Device[] getAllDeviceAsArray() {
         int countNullCell = 0;
-        for(int i = 0; i < devices.length; i++){
-            if (devices[i] == null) countNullCell++;
+        for (Device device : devices) {
+            if (device == null) countNullCell++;
         }
         Device[] allDevices = new Device[size-countNullCell];
         int j = 0;
-        for(int i = 0; i < devices.length; i++){
-            if(devices[i] != null) {
-                allDevices[j] = devices[i];
+        for (Device device : devices) {
+            if (device != null) {
+                allDevices[j] = device;
                 j++;
             }
         }
