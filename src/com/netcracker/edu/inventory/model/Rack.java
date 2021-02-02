@@ -20,6 +20,12 @@ public interface Rack {
     int getFreeSize();
 
     /**
+     *
+     * @return type of devices, which compatible with this rack
+     */
+    Class getTypeOfDevices();
+
+    /**
      * Get device object at specified slot of rack
      *
      * @param index - index of slot
@@ -31,7 +37,7 @@ public interface Rack {
     /**
      * Insert device object to specified slot of rack
      * Can't insert to full slot
-	 * Can't insert device object with incorrect IN (<0) or IN by default (0)
+     * Can't insert device object with incorrect IN (<0) or IN by default (0)
      *
      * @param device - device object for insert
      * @param index - index of slot
@@ -57,4 +63,12 @@ public interface Rack {
      *         null - if it is absent in rack
      */
     Device getDevByIN(int in);
+
+    /**
+     * Get array of devices witch are stored at current object of Rack
+     * Returned array not include nulls.
+     *
+     * @return array of devices
+     */
+    Device[] getAllDeviceAsArray();
 }

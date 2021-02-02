@@ -13,18 +13,31 @@ public class RackArrayImpl implements Rack {
 
     private int size;
     private int freeSize;
-    public Device[] devices;
+    private Device[] devices;
+    private final Class type;
 
     public RackArrayImpl(int size) {
-        if (size > 0) {
+        this(size, Device.class);
+    }
+
+    public RackArrayImpl(int size, Class clazz) {
+        if(size > 0) {
             this.size = size;
-            devices = new Device[size];
-            freeSize = size;
-        } else {
-            IllegalArgumentException e = new IllegalArgumentException(" Size of rack can not be 0 or less ");
+        }
+        else {
+            this.devices = new Device[0];
+            IllegalArgumentException e = new IllegalArgumentException("Size of rack can not be 0 or less.");
             log.log(Level.SEVERE, e.getMessage(), e);
             throw e;
         }
+        if(clazz == null || !Device.class.isAssignableFrom(clazz)) {
+            IllegalArgumentException e = new IllegalArgumentException("Type can't be null or not 'Device'");
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
+        }
+        this.devices = new Device[size];
+        this.freeSize = size;
+        this.type = clazz;
     }
 
     @Override
@@ -35,6 +48,11 @@ public class RackArrayImpl implements Rack {
     @Override
     public int getFreeSize() {
         return freeSize;
+    }
+
+    @Override
+    public Class getTypeOfDevices() {
+        return null;
     }
 
     @Override
@@ -82,6 +100,11 @@ public class RackArrayImpl implements Rack {
             }
         }
         return null;
+    }
+
+    @Override
+    public Device[] getAllDeviceAsArray() {
+        return new Device[0];
     }
 
     public boolean checkIndex(int index) {
