@@ -52,7 +52,7 @@ public class RackArrayImpl implements Rack {
 
     @Override
     public Class getTypeOfDevices() {
-        return null;
+        return type;
     }
 
     @Override
@@ -104,7 +104,19 @@ public class RackArrayImpl implements Rack {
 
     @Override
     public Device[] getAllDeviceAsArray() {
-        return new Device[0];
+        int countNullCell = 0;
+        for(int i = 0; i < devices.length; i++){
+            if (devices[i] == null) countNullCell++;
+        }
+        Device[] allDevices = new Device[size-countNullCell];
+        int j = 0;
+        for(int i = 0; i < devices.length; i++){
+            if(devices[i] != null) {
+                allDevices[j] = devices[i];
+                j++;
+            }
+        }
+        return allDevices;
     }
 
     public boolean checkIndex(int index) {
