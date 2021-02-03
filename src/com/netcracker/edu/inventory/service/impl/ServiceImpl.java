@@ -3,23 +3,30 @@ package com.netcracker.edu.inventory.service.impl;
 import com.netcracker.edu.inventory.model.Device;
 import com.netcracker.edu.inventory.service.Service;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class ServiceImpl implements Service {
 
     @Override
     public void sortByIN(Device[] devices) {
-        for (int i = 0; i < devices.length - 1; i++) {
-            for (int j = 0; j < devices.length - i - 1; j++) {
-                if (devices[j + 1] != null
-                        && (devices[j] == null
-                        || (devices[j + 1].getIn() != 0
-                        && (devices[j].getIn() == 0
-                        || (devices[j].getIn() > devices[j + 1].getIn()))))) {
-                    Device temp = devices[j];
-                    devices[j] = devices[j + 1];
-                    devices[j + 1] = temp;
+        Arrays.sort(devices, new Comparator<Device>() {
+            @Override
+            public int compare(Device o1, Device o2) {
+                if(o2 == null || (o1 != null && o2.getIn() == 0)) {
+                    return -1;
                 }
+                if(o1 == null || o1.getIn() == 0) {
+                    return 1;
+                }
+                return o1.getIn() - (o2.getIn());
             }
-        }
+        });
+    }
+
+    @Override
+    public void sortByProductionDate(Device[] devices) {
+
     }
 
     @Override
@@ -33,5 +40,29 @@ public class ServiceImpl implements Service {
                 if (devices[i].getType() != null) devices[i] = null;
             }
         }
+    }
+
+    @Override
+    public void filtrateByManufacturer(Device[] devices, String manufacturer) {
+        for(int i=0; i<devices.length; i++){
+            if (devices[i] != null && manufacturer != null){
+                if (!devices[i].getManufacturer().equalsIgnoreCase(manufacturer)) devices[i] = null;
+            }
+        }
+    }
+
+    @Override
+    public void filtrateByModel(Device[] devices, String model) {
+        for(int i=0; i<devices.length; i++){
+            if (devices[i] != null && model != null){
+                if (!devices[i].getModel().equalsIgnoreCase(model)) devices[i] = null;
+            }
+        }
+    }
+
+    @Override
+    public boolean isValidDeviceForInsertToRack(Device device) {
+        if (device == null) return false;
+        return  device.getIn() > 0;
     }
 }
