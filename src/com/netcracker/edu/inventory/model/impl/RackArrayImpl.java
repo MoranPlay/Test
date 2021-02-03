@@ -3,6 +3,7 @@ package com.netcracker.edu.inventory.model.impl;
 import com.netcracker.edu.inventory.exception.DeviceValidationException;
 import com.netcracker.edu.inventory.model.Device;
 import com.netcracker.edu.inventory.model.Rack;
+import com.netcracker.edu.inventory.service.impl.ServiceImpl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,8 @@ import java.util.logging.Logger;
 public class RackArrayImpl implements Rack {
 
     protected static final Logger log = Logger.getLogger(RackArrayImpl.class.getName());
+
+    protected ServiceImpl services = new ServiceImpl();
 
     private int size;
     private int freeSize;
@@ -64,19 +67,20 @@ public class RackArrayImpl implements Rack {
     @Override
     public boolean insertDevToSlot(Device device, int index) {
         checkIndex(index);
-        if (device != null && device.getIn() > 0) {
-            if (devices[index] == null) {
-                devices[index] = device;
-                freeSize--;
+        if (services.isValidDeviceForInsertToRack(device)) {
+            if (checkValid(device)) {
+                if (devices[index] == null) {
+                    devices[index] = device;
+                    freeSize--;
 
-                return true;
+                    return true;
+                }
             }
         } else {
             DeviceValidationException e = new DeviceValidationException("Rack.insertDevToSlot", device);
             log.log(Level.SEVERE, e.getMessage(), e);
             throw e;
-        }
-        return false;
+        } return false;
     }
 
     @Override
@@ -117,6 +121,14 @@ public class RackArrayImpl implements Rack {
             }
         }
         return allDevices;
+    }
+
+    public boolean checkValid(Device device) {
+        if (type == null) return true;
+        if(type.isAssignableFrom(device.getClass())) return true;
+        IllegalArgumentException e = new IllegalArgumentException("Type is incompatible");
+        log.log(Level.SEVERE, e.getMessage(), e);
+        throw e;
     }
 
     public boolean checkIndex(int index) {

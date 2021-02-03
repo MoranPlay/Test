@@ -26,7 +26,18 @@ public class ServiceImpl implements Service {
 
     @Override
     public void sortByProductionDate(Device[] devices) {
-
+        Arrays.sort(devices, new Comparator<Device>() {
+            @Override
+            public int compare(Device o1, Device o2) {
+                if(o2 == null || (o1 != null && o2.getProductionDate() == null)) {
+                    return -1;
+                }
+                if(o1 == null || o1.getProductionDate() == null) {
+                    return 1;
+                }
+                return o1.getProductionDate().compareTo(o2.getProductionDate());
+            }
+        });
     }
 
     @Override
@@ -46,7 +57,11 @@ public class ServiceImpl implements Service {
     public void filtrateByManufacturer(Device[] devices, String manufacturer) {
         for(int i=0; i<devices.length; i++){
             if (devices[i] != null && manufacturer != null){
-                if (!devices[i].getManufacturer().equalsIgnoreCase(manufacturer)) devices[i] = null;
+                if (devices[i].getManufacturer() == null) devices[i] = null;
+                else if (!devices[i].getManufacturer().equalsIgnoreCase(manufacturer)) devices[i] = null;
+            }
+            if (devices[i] != null && manufacturer == null) {
+                if (devices[i].getManufacturer() != null) devices[i] = null;
             }
         }
     }
@@ -55,7 +70,11 @@ public class ServiceImpl implements Service {
     public void filtrateByModel(Device[] devices, String model) {
         for(int i=0; i<devices.length; i++){
             if (devices[i] != null && model != null){
-                if (!devices[i].getModel().equalsIgnoreCase(model)) devices[i] = null;
+                if (devices[i].getModel() == null) devices[i] = null;
+                else if (!devices[i].getModel().equalsIgnoreCase(model)) devices[i] = null;
+            }
+            if (devices[i] != null && model == null) {
+                if (devices[i].getModel() != null) devices[i] = null;
             }
         }
     }
